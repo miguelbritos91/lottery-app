@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="backToHome()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Sortear</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    <ion-grid>
+      <ion-row *ngIf="stateLottery === 'init'">
+        <ion-col>
+          <p class="title">Empezar sorteo!</p>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="stateLottery === 'init'">
+        <ion-col>
+          <ion-img src="/assets/images/bolillas.jpg" alt="Bolillas"></ion-img>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="stateLottery === 'lottery'">
+        <ion-col>
+          <ion-img style="width: 50%; height: auto; margin: auto;" src="/assets/images/loading.gif"
+            alt="Bolillas"></ion-img>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="stateLottery === 'finish'">
+        <ion-col>
+          <p class="subtitle">Ganadores!</p>
+          <p class="winer">1° {{winer1.name}} {{winer1.lastname}}</p>
+          <p class="title winer-number">{{winer1.value}}</p>
+          <p class="winer">2° {{winer2.name}} {{winer2.lastname}}</p>
+          <p class="title winer-number">{{winer2.value}}</p>
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-top: 20px;" *ngIf="stateLottery === 'init'">
+        <ion-col>
+          <button class="button-sortear" (click)="initLottery()">
+            <ion-icon name="save-outline"></ion-icon>
+            Comenzar!
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

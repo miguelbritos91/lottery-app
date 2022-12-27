@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="backToHome()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="deleteAlert()" *ngIf="number.register" color="danger">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Registrar</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <p class="numberValue">{{number.value}}</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label>Nombre:</ion-label>
+            <ion-input [(ngModel)]="number.name" [disabled]="!editData && number.register"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label>Apellido:</ion-label>
+            <ion-input [(ngModel)]="number.lastname" [disabled]="!editData && number.register"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label>Teléfono:</ion-label>
+            <ion-input [(ngModel)]="number.phone" [disabled]="!editData && number.register"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row style="margin-top: 20px;">
+        <ion-col>
+          <button class="button-save" (click)="register()" *ngIf="!number.register">
+            <ion-icon name="save-outline"></ion-icon>
+            Guardar
+          </button>
+          <button class="button-edit" (click)="editData = true" *ngIf="number.register && !editData">
+            <ion-icon name="save-outline"></ion-icon>
+            Editar
+          </button>
+          <button class="button-save" (click)="edit()" *ngIf="number.register && editData">
+            <ion-icon name="save-outline"></ion-icon>
+            Guardar
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
