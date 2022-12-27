@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-lottery',
@@ -13,15 +14,19 @@ export class LotteryPage implements OnInit {
   winer1:any = {}
   winer2:any = {}
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private alertController: AlertController) { }
 
   ngOnInit() {
     this.getNumberSelected()
   }
 
   initLottery(){
-    this.stateLottery = 'lottery'
-    this.startLottery()
+    if(this.numbersRegistered.length > 1){
+      this.stateLottery = 'lottery'
+      this.startLottery()
+    }else{
+      this.loteryEmptyAlert()
+    }
   }
 
   backToHome(){
@@ -75,5 +80,25 @@ export class LotteryPage implements OnInit {
 
   random(min:any, max:any) {
     return Math.floor((Math.random() * (max - min + 1)) + min);
+  }
+
+  async loteryEmptyAlert() {
+    const alert = await this.alertController.create({
+      header: 'No hay números registrados para realizar el sorteo',
+      buttons: [
+        {
+          text: 'Aceptar',
+          role: 'confirm',
+          handler: () => {
+            console.log('MB: Aceptar')
+            this.backToHome()
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+
+    const { role } = await alert.onDidDismiss()
   }
 }

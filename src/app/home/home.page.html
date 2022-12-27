@@ -30,7 +30,8 @@
       </ion-row>
       <ion-row style="margin-top: 20px;">
         <ion-col>
-          <button class="button-sortear" (click)="gotoSorteo()">
+          <button class="button-sortear" (click)="gotoSorteo()" [disabled]="numbersRegistered.length<2"
+            [ngClass]="{'btn-disabled': numbersRegistered.length<2}">
             Realizar Sorteo
           </button>
         </ion-col>
