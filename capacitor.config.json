@@ -1,6 +1,6 @@
 {
-	"appId": "io.ionic.starter",
-	"appName": "lottery_app",
+	"appId": "com.lottery.mb",
+	"appName": "Lottery",
 	"webDir": "www",
 	"bundledWebRuntime": false
 }

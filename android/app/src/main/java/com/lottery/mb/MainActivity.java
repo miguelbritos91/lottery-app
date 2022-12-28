@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package com.lottery.mb;
 
 import com.getcapacitor.BridgeActivity;
 

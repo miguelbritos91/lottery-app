@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">lottery_app</string>
-    <string name="title_activity_main">lottery_app</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="app_name">Lottery</string>
+    <string name="title_activity_main">Lottery</string>
+    <string name="package_name">com.lottery.mb</string>
+    <string name="custom_url_scheme">com.lottery.mb</string>
 </resources>
