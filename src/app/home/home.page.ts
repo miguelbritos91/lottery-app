@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { DbServiceService } from '../db-service.service';
 import {Router} from "@angular/router"
+import { Store } from '@ngrx/store'
+import { LocalStorageService } from '../services/local-storage.service';
+
+interface AppState {
+  numbers: any;
+}
 
 @Component({
   selector: 'app-home',
@@ -13,21 +18,24 @@ export class HomePage implements OnInit{
   numbersRegistered: any[] = []
   rows: any[] = []
 
-  constructor(private dbService: DbServiceService, private router: Router) {}
+  constructor(private localStoreService: LocalStorageService, private router: Router, private store: Store<AppState>) {
+    this.store.select('numbers').subscribe( state => {
+      this.numbersRegistered = JSON.parse(state)
+      this.localStoreService.setStorage('numbersRegistered', this.numbersRegistered)
+      this.handleRefresh()
+    })
+  }
 
   ngOnInit(): void {
     this.loadNumbers()
     this.handleRefresh()
   }
 
-  handleRefresh(event?: any) {    
-    this.dbService.getNumbersRegistered().then((data)=>{
-      console.log('MB: numeros registrados:', data)
-      this.numbersRegistered = data;
-      console.log('MB: numeros:'+JSON.stringify(this.numbersRegistered))
-      this.loadNumbers()
-      event.target.complete()
-    })
+  handleRefresh(event?:any) {    
+    const data = this.localStoreService.getStorage('numberRegistered')
+    this.numbersRegistered = data;
+    this.loadNumbers()
+    if(event) event.target.complete()
   };
 
   loadNumbers(){
@@ -45,10 +53,8 @@ export class HomePage implements OnInit{
           lastname: null,
           phone:null
         }
-        // console.log('MB: ya tengo los numeros'+JSON.stringify(this.numbersRegistered))
-        const val = this.numbersRegistered.filter((el) => el.value == value)
+        const val = (this.numbersRegistered.length > 0) ? this.numbersRegistered.filter((el) => el.value == value) : []
         if (val.length > 0) {
-          console.log('MB: exist'+JSON.stringify(val))
           this.numbers.push(val[0])
         }else{
           this.numbers.push(number)
@@ -56,24 +62,19 @@ export class HomePage implements OnInit{
       }
       this.rows.push(this.numbers)
     }
-    console.log('MB: load numbers')
   }
 
   registerNumber(num:any){
-    localStorage.setItem('numberSelect', '');
-    localStorage.setItem('numberSelect', JSON.stringify(num));
+    this.localStoreService.setStorage('numberSelect', {})
+    this.localStoreService.setStorage('numberSelect', num)
     this.router.navigate(['/register'])
   }
 
   getNumbersRegistered(){
-    this.dbService.getNumbersRegistered().then((data)=>{
-      this.numbersRegistered = data;
-    })
+    this.numbersRegistered = this.localStoreService.getStorage('numbersRegistered')
   }
 
   gotoSorteo(){
-    localStorage.setItem('numbersRegistered', '');
-    localStorage.setItem('numbersRegistered', JSON.stringify(this.numbersRegistered));
     this.router.navigate(['/lottery'])
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { LocalStorageService } from '../services/local-storage.service';
 
 @Component({
   selector: 'app-lottery',
@@ -14,11 +15,12 @@ export class LotteryPage implements OnInit {
   winer1:any = {}
   winer2:any = {}
 
-  constructor(private router: Router, private alertController: AlertController) { }
-
-  ngOnInit() {
-    this.getNumberSelected()
+  constructor(private router: Router, private localStoreService: LocalStorageService, private alertController: AlertController) {
+    const dataStorage = this.localStoreService.getStorage('numbersRegistered')
+    this.numbersRegistered = dataStorage ?? []
   }
+
+  ngOnInit() { }
 
   initLottery(){
     if(this.numbersRegistered.length > 1){
@@ -30,14 +32,7 @@ export class LotteryPage implements OnInit {
   }
 
   backToHome(){
-    localStorage.setItem('numbersRegistered', '');
     this.router.navigate(['/'])
-  }
-
-  getNumberSelected(){
-    this.numbersRegistered = []
-    this.numbersRegistered = JSON.parse(localStorage.getItem('numbersRegistered') ?? '')
-    console.log('MB: numbers'+JSON.stringify(this.numbersRegistered));
   }
 
   startLottery(){
@@ -71,8 +66,6 @@ export class LotteryPage implements OnInit {
         lotteryFinish = true
       }
     }
-    console.log('MB win '+JSON.stringify(this.winer1));
-    console.log('MB win '+JSON.stringify(this.winer2));
     setTimeout(() => {
       this.stateLottery = 'finish'
     }, 3000);
@@ -90,7 +83,6 @@ export class LotteryPage implements OnInit {
           text: 'Aceptar',
           role: 'confirm',
           handler: () => {
-            console.log('MB: Aceptar')
             this.backToHome()
           },
         },

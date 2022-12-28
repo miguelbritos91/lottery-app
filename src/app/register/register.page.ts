@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { DbServiceService } from '../db-service.service';
+import { Store } from '@ngrx/store'
+import { GetNumbersRegistersAction } from '../redux/redux.actions';
+import { LocalStorageService } from '../services/local-storage.service';
+
+interface AppState {
+  numbers: any;
+}
 
 @Component({
   selector: 'app-register',
@@ -12,22 +18,28 @@ export class RegisterPage implements OnInit {
 
   number:any = {}
   editData:any = false
+  numbersRegistered: any[] = []
 
-  constructor(private dbService: DbServiceService, private router: Router, private alertController: AlertController) { 
+  constructor(private localStoreService: LocalStorageService, private router: Router, private alertController: AlertController, private store: Store<AppState>) { 
     this.number = {}
-   }
+    const dataStorage = this.localStoreService.getStorage('numbersRegistered')
+    this.numbersRegistered = dataStorage ?? []
+    this.store.select('numbers').subscribe( state => {
+      this.numbersRegistered = JSON.parse(state)
+    })
+  }
 
   ngOnInit() {
     this.getNumberSelected()
   }
 
   backToHome(){
-    localStorage.setItem('numberSelect', '');
+    this.localStoreService.setStorage('numberSelect', {})
     this.router.navigate(['/'])
   }
 
   getNumberSelected(){
-    const itemStorage = JSON.parse(localStorage.getItem('numberSelect') ?? '')
+    const itemStorage = this.localStoreService.getStorage('numberSelect')
     const item = {
       value: itemStorage.value,
       register: itemStorage.register ?? false,
@@ -36,27 +48,34 @@ export class RegisterPage implements OnInit {
       phone: itemStorage.phone ?? '',
     }
     this.number = item
-    console.log('MB:'+this.number)
   }
 
   register(){
     if(this.number.name != '' || this.number.lastname != ''){
       this.number.register = true
-      console.log('MB;'+this.number)
-      this.dbService.registerNumber(this.number)
+      this.numbersRegistered.push(this.number)
+      this.localStoreService.setStorage('numbersRegistered', this.numbersRegistered)
+      const action = new GetNumbersRegistersAction()
+      this.store.dispatch(action)
       this.backToHome()
     }
   }
 
   edit(){
-    console.log('MB;'+this.number)
-    this.dbService.editNumber(this.number)
+    const idx = this.numbersRegistered.findIndex(i => i.value === this.number.value)
+    this.numbersRegistered[idx] = this.number
+    this.localStoreService.setStorage('numbersRegistered', this.numbersRegistered)
+    const action = new GetNumbersRegistersAction()
+    this.store.dispatch(action)
     this.backToHome()
   }
 
   delete(){
-    console.log('MB;'+this.number)
-    this.dbService.deleteNumber(this.number)
+    const idx = this.numbersRegistered.findIndex(i => i.value === this.number.value)
+    this.numbersRegistered.splice(idx, 1)
+    this.localStoreService.setStorage('numbersRegistered', this.numbersRegistered)
+    const action = new GetNumbersRegistersAction()
+    this.store.dispatch(action)
     this.backToHome()
   }
 
